@@ -13,6 +13,8 @@ from src.initialisation import init_grow
 from src.variation import get_variation_fn
 from src.selection import select_single_objective, select_multi_objective
 
+timestr = time.strftime("%Y%m%d-%H%M%S")
+
 def DEPGEP(
     X: np.ndarray,
     y: np.ndarray,
@@ -128,6 +130,9 @@ def DEPGEP(
         and (max_time_seconds is None or time_seconds < max_time_seconds):
 
         if generation % log_frequency == 0:
+            if not multi_objective:
+                with open(f"plots/data/{timestr}.txt", "a") as f:
+                    f.write(f"{generation}, {np.min(fitness[:, 0])}\n")
             logger.log(generation, evaluations, time_seconds, time_seconds_raw, structures, constants, fitness)
 
         generation_start = time.time()
@@ -227,6 +232,7 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
     import seaborn as sns
+    import time
     
     ground_truth = "0.3 * x0 * sin(2 * pi * x0)"
     X, y = synthetic_problem(ground_truth, random_state=42)
@@ -247,24 +253,29 @@ if __name__ == "__main__":
 
     # with more objectives, larger population sizes and budgets are needed
     # - at least with the provided code, maybe you can improve on that...
-    mo_front = DEPGEP(
-        X=X_train,
-        y=y_train,
-        X_test=X_test,
-        y_test=y_test,
-        population_size=1000,
-        linear_scaling=True,
-        multi_objective=True,
-        max_time_seconds=60,
-        return_value="non_dominated"
-    )
+    # mo_front = DEPGEP(
+    #     X=X_train,
+    #     y=y_train,
+    #     X_test=X_test,
+    #     y_test=y_test,
+    #     population_size=1000,
+    #     linear_scaling=True,
+    #     multi_objective=True,
+    #     max_time_seconds=60,
+    #     return_value="non_dominated"
+    # )
 
     so_front["type"] = "Single Objective"
-    mo_front["type"] = "Multi Objective"
-    fronts = pd.concat([so_front, mo_front], ignore_index=True)
+    # mo_front["type"] = "Multi Objective"
+    
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    so_front.to_json('plots/so_data_' + timestr + '.json', orient='records', lines=True)
+    # mo_front.to_json('plots/mo_data_' + timestr + '.json', orient='records', lines=True)
+    
+    # fronts = pd.concat([so_front, mo_front], ignore_index=True)
 
     ax = sns.lineplot(
-        fronts,
+        so_front,
         x="size",
         y="mse_train",
         hue="type",
@@ -272,8 +283,25 @@ if __name__ == "__main__":
         alpha=0.5,
         legend="brief"
     )
-    for _, row in fronts.iterrows():
-        ax.text(row["size"] + 0.2, row["mse_train"], row["expression"], fontsize=8)
+    # for _, row in fronts.iterrows():
+    #     ax.text(row["size"] + 0.2, row["mse_train"], row["expression"], fontsize=8)
     ax.set_yscale("log")
     ax.set_title(f"Pareto Approximation Fronts for {ground_truth}")
     plt.show()
+    
+    
+    
+    # ax = sns.lineplot(
+    #     mo_front,
+    #     x="size",
+    #     y="mse_train",
+    #     hue="type",
+    #     marker="o",
+    #     alpha=0.5,
+    #     legend="brief"
+    # )
+    # for _, row in fronts.iterrows():
+    #     ax.text(row["size"] + 0.2, row["mse_train"], row["expression"], fontsize=8)
+    # ax.set_yscale("log")
+    # ax.set_title(f"Pareto Approximation Fronts for {ground_truth}")
+    # plt.show()
