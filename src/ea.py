@@ -270,8 +270,8 @@ if __name__ == "__main__":
     # mo_front["type"] = "Multi Objective"
     
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    so_front.to_json('plots/so_data_' + timestr + '.json', orient='records', lines=True)
-    # mo_front.to_json('plots/mo_data_' + timestr + '.json', orient='records', lines=True)
+    so_front.to_json('plots/data/so_data_' + timestr + '.json', orient='records', lines=True)
+    # mo_front.to_json('plots/data/mo_data_' + timestr + '.json', orient='records', lines=True)
     
     # fronts = pd.concat([so_front, mo_front], ignore_index=True)
 
