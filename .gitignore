@@ -2,6 +2,6 @@
 __pycache__
 results
 preprocessed
-plots
+plots/data
 data/tmp
 generations.csv
