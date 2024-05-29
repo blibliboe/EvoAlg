@@ -8,13 +8,13 @@ if __name__ == "__main__":
     
     ground_truth = "0.3 * x0 * sin(2 * pi * x0)"
     
-    mo_front = pd.read_json('plots/data/mo_data_20240529-100643.json', lines=True)
-    so_front = pd.read_json('plots/data/so_data_20240529-100643.json', lines=True)
+    # mo_front = pd.read_json('plots/mo_data_20240529-100643.json', lines=True)
+    so_front = pd.read_json('plots/so_data_20240529-115122.json', lines=True)
     
-    fronts = pd.concat([so_front, mo_front], ignore_index=True)
+    # fronts = pd.concat([so_front, mo_front], ignore_index=True)
     
     ax = sns.lineplot(
-        mo_front,
+        so_front,
         x="size",
         y="mse_train",
         hue="type",

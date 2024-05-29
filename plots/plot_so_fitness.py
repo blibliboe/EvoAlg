@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Read the data from the file
-file_path = 'plots/data/20240529-104508.txt'
+file_path = 'plots/data/20240529-115907.txt'
 data = pd.read_csv(file_path, header=None, names=['X', 'Y'])
 
 # Display the data to check if it was read correctly

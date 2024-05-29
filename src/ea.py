@@ -29,7 +29,7 @@ def DEPGEP(
     initialisation: str = "random",
     linear_scaling: bool = False,
     multi_objective: bool = False,
-    max_generations: int | None = None,
+    max_generations: int | None = 38000,
     max_evaluations: int | None = None,
     max_time_seconds: float | None = None,
     seed: int | None = None,
@@ -74,7 +74,8 @@ def DEPGEP(
         num_inputs=X.shape[1],
         scaling_factor=scaling_factor,
         p_crossover=p_crossover,
-        linear_scaling=linear_scaling
+        linear_scaling=linear_scaling,
+        max_generations=max_generations  # Pass max_generations here
     )
 
     if multi_objective:
@@ -126,8 +127,8 @@ def DEPGEP(
     t_start = time.time()
     t_last_print = 0
     while (max_generations is None or generation < max_generations) \
-        and (max_evaluations is None or evaluations < max_evaluations) \
-        and (max_time_seconds is None or time_seconds < max_time_seconds):
+    and (max_evaluations is None or evaluations < max_evaluations) \
+    and (max_time_seconds is None or time_seconds < max_time_seconds):
 
         if generation % log_frequency == 0:
             if not multi_objective:
@@ -136,12 +137,9 @@ def DEPGEP(
             logger.log(generation, evaluations, time_seconds, time_seconds_raw, structures, constants, fitness)
 
         generation_start = time.time()
-        evaluations += perform_variation(structures, constants, fitness, trial_structures, trial_constants, trial_fitness, X, y, rng)
+        evaluations += perform_variation(structures, constants, fitness, trial_structures, trial_constants, trial_fitness, X, y, rng, generation, max_generations)
         perform_selection(structures, constants, fitness, trial_structures, trial_constants, trial_fitness)
         generation_end = time.time()
-
-        # use this to check that the fitness matches the encoded expressions
-        # debug_assert_fitness_correctness(structures, constants, fitness, to_sympy, X, y, linear_scaling)
 
         generation += 1
         time_seconds = generation_end - t_start
@@ -185,6 +183,7 @@ def DEPGEP(
             print(f"{sym.simplify(best['expression'])} @ (MSE: {best['mse_train']}, Size: {best['size']})")
         return pd.DataFrame(front)
 
+
 @cache
 def get_compiled_functions(
     operators: list[str],
@@ -195,7 +194,8 @@ def get_compiled_functions(
     num_inputs: int,
     scaling_factor: float,
     p_crossover: float,
-    linear_scaling: bool
+    linear_scaling: bool,
+    max_generations: int  # Add max_generations as a parameter
 ):
     """This function aims to avoid repeated jit compilations by caching"""
     evaluate_individual, evaluate_population, to_sympy = get_fitness_and_parser(
@@ -215,7 +215,8 @@ def get_compiled_functions(
         scaling_factor=scaling_factor,
         linear_scaling=linear_scaling,
         evaluate_individual=evaluate_individual,
-        evaluate_population=evaluate_population
+        evaluate_population=evaluate_population,
+        max_generations=max_generations  # Pass max_generations here
     )
 
     return (
