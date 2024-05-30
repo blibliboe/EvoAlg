@@ -22,6 +22,7 @@ def DEPGEP(
     population_size: int = 25,
     max_expression_size: int = 32,
     num_constants: int = 5,
+    progress_dependent_crossover=False,
     scaling_factor: float = 0.2,
     p_crossover: float = 0.1,
     initialisation: str = "random",
@@ -72,7 +73,8 @@ def DEPGEP(
         num_inputs=X.shape[1],
         scaling_factor=scaling_factor,
         p_crossover=p_crossover,
-        linear_scaling=linear_scaling
+        linear_scaling=linear_scaling,
+        progress_dependent_crossover=progress_dependent_crossover
     )
 
     if multi_objective:
@@ -130,8 +132,13 @@ def DEPGEP(
         if generation % log_frequency == 0:
             logger.log(generation, evaluations, time_seconds, time_seconds_raw, structures, constants, fitness)
 
+        generations_progress = generation / max_generations if max_generations is not None else 0
+        evaluations_progress = evaluations / max_evaluations if max_evaluations is not None else 0
+        time_progress = time_seconds / max_time_seconds if max_time_seconds is not None else 0
+        progress = np.max([generations_progress, evaluations_progress, time_progress])
+
         generation_start = time.time()
-        evaluations += perform_variation(structures, constants, fitness, trial_structures, trial_constants, trial_fitness, X, y, rng)
+        evaluations += perform_variation(structures, constants, fitness, trial_structures, trial_constants, trial_fitness, X, y, rng, progress)
         perform_selection(structures, constants, fitness, trial_structures, trial_constants, trial_fitness)
         generation_end = time.time()
 
@@ -190,7 +197,8 @@ def get_compiled_functions(
     num_inputs: int,
     scaling_factor: float,
     p_crossover: float,
-    linear_scaling: bool
+    linear_scaling: bool,
+    progress_dependent_crossover: bool
 ):
     """This function aims to avoid repeated jit compilations by caching"""
     evaluate_individual, evaluate_population, to_sympy = get_fitness_and_parser(
@@ -210,7 +218,8 @@ def get_compiled_functions(
         scaling_factor=scaling_factor,
         linear_scaling=linear_scaling,
         evaluate_individual=evaluate_individual,
-        evaluate_population=evaluate_population
+        evaluate_population=evaluate_population,
+        progress_dependent_crossover=progress_dependent_crossover
     )
 
     return (

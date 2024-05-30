@@ -95,7 +95,7 @@ if __name__ == "__main__":
         max_time_seconds = int(30),
         log_level = "mse_elite",
         log_frequency = 100,
-        # quiet = True
+        quiet = True
     )
     
     run_experiment(
@@ -104,32 +104,34 @@ if __name__ == "__main__":
             "2.718 * x0 ** 2 + 3.141636 * x0",
             "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
             "0.3 * x0 * sin(2 * pi * x0)",
-            # from https://archive.ics.uci.edu/datasets
-            "Airfoil",
-            "Concrete Compressive Strength",
-            "Energy Cooling",
-            "Energy Heating",
-            "Yacht Hydrodynamics",
+            # # from https://archive.ics.uci.edu/datasets
+            # "Airfoil",
+            # "Concrete Compressive Strength",
+            # "Energy Cooling",
+            # "Energy Heating",
+            # "Yacht Hydrodynamics",
         ],
         methods=[
             dict(
-                name="Fewer Operators",
+                name="Static Crossover",
                 operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
                 population_size=100,
+                progress_dependent_crossover=False,
                 **logging_and_budget
             ),
             dict(
-                name="More Operators",
-                operators=tuple("+,-,*,/,sin,cos,exp,log,sqrt".split(",")),
+                name="Progress Dependent Crossover",
+                operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
                 population_size=100,
+                progress_dependent_crossover=True,
                 **logging_and_budget
             )
         ],
-        folds=5,
+        folds=3,
         repeats=3,
         # clear_results_path=True
     )
