@@ -22,6 +22,16 @@ conda activate cs4205-project
 python -m src.ea
 ```
 
+### Running an experiment
+
+Run the following to run an experiment. Plots should be in the `plots` folder.
+
+```bash
+python run.py
+python evaluate.py
+```
+Make sure to delete the `plots` `.numba` `preprocessed` and `results` folders before a new experiment.
+
 ### Using a Devcontainer
 
 Generally, you need [Docker](https://www.docker.com/products/docker-desktop/) and [editor support](https://containers.dev/supporting), then the editor will tell you what to do:
