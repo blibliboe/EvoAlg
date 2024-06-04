@@ -105,7 +105,7 @@ if __name__ == "__main__":
             "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
             "0.3 * x0 * sin(2 * pi * x0)",
             # # from https://archive.ics.uci.edu/datasets
-            # "Airfoil",
+            "Airfoil",
             # "Concrete Compressive Strength",
             # "Energy Cooling",
             # "Energy Heating",
@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 **logging_and_budget
             )
         ],
-        folds=3,
-        repeats=3,
+        folds=2,
+        repeats=5,
         # clear_results_path=True
     )
