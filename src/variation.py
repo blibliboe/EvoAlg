@@ -12,7 +12,8 @@ def get_variation_fn(
     linear_scaling: bool,
     evaluate_individual: callable,
     evaluate_population: callable,
-    progress_dependent_crossover: bool
+    progress_dependent_crossover: str,
+    upper_bound: float
 ):
     @nb.jit((
             nty.Array(nty.float32, 1, "C"),
@@ -106,19 +107,17 @@ def get_variation_fn(
             while r2 == i or r2 == r0 or r2 == r1:  r2 = rng.integers(0, population_size)
             j_rand: np.int32  = rng.integers(0, max_expression_size + num_constants)
 
-            # The function definitions look a bit weird because numba does not properly support accessing variables
-            # outside of the scope of the lambda for some reason.
-            if progress_dependent_crossover:
-                # Progress-dependent crossover probability
-                # High-level nodes (j < max_expression_size // 2) have crossover probability decreasing from 0.3 to 0.03
-                # Low-level nodes (j >= max_expression_size // 2) have crossover probability increasing from 0.03 to 0.3
-                crossover_probability = lambda i, j, max_expression_size, p_crossover, progress, all_depths: (0.3 - 0.27 * progress) if all_depths[i][j] < np.max(all_depths[i]) // 2 else (0.03 + 0.27 * progress)
+            max_depth = np.max(all_depths[i])
+
+            if progress_dependent_crossover == "Linear":
+                crossover_probability = lambda depth, max_depth, progress, nodes_at_same_level, upper_bound, p_crossover: (p_crossover * upper_bound * -2 * (0.5 - progress) * (depth / max_depth - 0.5) / nodes_at_same_level)
             else:
-                crossover_probability = lambda i, j, max_expression_size, p_crossover, progress, all_depths: p_crossover
+                crossover_probability = lambda depth, max_depth, progress, nodes_at_same_level, upper_bound, p_crossover: p_crossover
 
             # construct trial population
             for j in range(structures.shape[1]):
-                if rng.random() < crossover_probability(i, j, max_expression_size, p_crossover, progress, all_depths) or j == j_rand:
+                nodes_at_same_level = list(all_depths[i]).count(all_depths[i][j])
+                if rng.random() < crossover_probability(float(all_depths[i][j]), float(max_depth), progress, float(nodes_at_same_level), upper_bound, p_crossover) or j == j_rand:
                     trial_structures[i, j] = structures[r0, j] + scaling_factor * (structures[r1, j] - structures[r2, j])
                     # repair as per Eq 8 (https://doi.org/10.1145/1389095.1389331)
                     v_abs = np.abs(trial_structures[i, j])
@@ -131,7 +130,7 @@ def get_variation_fn(
                 j_rand -= max_expression_size
             
             for j in range(constants.shape[1]):
-                if rng.random() < crossover_probability(i, j, max_expression_size, p_crossover, progress, all_depths)  or j == j_rand:
+                if rng.random() < p_crossover  or j == j_rand:
                     trial_constants[i, j] = constants[r0, j] + scaling_factor * (constants[r1, j] - constants[r2, j])
                 else:
                     trial_constants[i, j] = constants[i, j]

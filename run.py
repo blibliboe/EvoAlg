@@ -102,11 +102,11 @@ if __name__ == "__main__":
         problems=[
             # from https://doi.org/10.1145/1389095.1389331
             "2.718 * x0 ** 2 + 3.141636 * x0",
-            "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
+            # "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
             "0.3 * x0 * sin(2 * pi * x0)",
             # # from https://archive.ics.uci.edu/datasets
             "Airfoil",
-            # "Concrete Compressive Strength",
+            "Concrete Compressive Strength",
             # "Energy Cooling",
             # "Energy Heating",
             # "Yacht Hydrodynamics",
@@ -118,20 +118,40 @@ if __name__ == "__main__":
                 max_expression_size=32,
                 num_constants=5,
                 population_size=100,
-                progress_dependent_crossover=False,
                 **logging_and_budget
             ),
             dict(
-                name="Progress Dependent Crossover",
+                name="Minimal (1.2)",
                 operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
                 population_size=100,
-                progress_dependent_crossover=True,
+                progress_dependent_crossover="Linear",
+                upper_bound=1.2,
                 **logging_and_budget
-            )
+            ),
+            dict(
+                name="Fair (2)",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=2,
+                **logging_and_budget
+            ),
+            dict(
+                name="Maximal (3)",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=3,
+                **logging_and_budget
+            ),
         ],
         folds=2,
-        repeats=5,
+        repeats=10,
         # clear_results_path=True
     )
