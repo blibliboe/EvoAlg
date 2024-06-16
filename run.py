@@ -105,8 +105,8 @@ if __name__ == "__main__":
             "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
             "0.3 * x0 * sin(2 * pi * x0)",
             # # from https://archive.ics.uci.edu/datasets
-            # "Airfoil",
-            # "Concrete Compressive Strength",
+            "Airfoil",
+            "Concrete Compressive Strength",
             # "Energy Cooling",
             # "Energy Heating",
             # "Yacht Hydrodynamics",
@@ -118,20 +118,60 @@ if __name__ == "__main__":
                 max_expression_size=32,
                 num_constants=5,
                 population_size=100,
-                progress_dependent_crossover=False,
                 **logging_and_budget
             ),
             dict(
-                name="Progress Dependent Crossover",
+                name="1.2",
                 operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
                 population_size=100,
-                progress_dependent_crossover=True,
+                progress_dependent_crossover="Linear",
+                upper_bound=1.2,
                 **logging_and_budget
-            )
+            ),
+            dict(
+                name="1.5",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=1.5,
+                **logging_and_budget
+            ),
+            dict(
+                name="2",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=2,
+                **logging_and_budget
+            ),
+            dict(
+                name="2.5",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=2.5,
+                **logging_and_budget
+            ),
+            dict(
+                name="3",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=3,
+                **logging_and_budget
+            ),
         ],
-        folds=3,
-        repeats=3,
+        folds=2,
+        repeats=5,
         # clear_results_path=True
     )

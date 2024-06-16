@@ -30,7 +30,7 @@ Run the following to run an experiment. Plots should be in the `plots` folder.
 python run.py
 python evaluate.py
 ```
-Make sure to delete the `plots` `.numba` `preprocessed` and `results` folders before a new experiment.
+Make sure to delete the `plots`, `preprocessed`, and `results` folders before a new experiment.
 
 ### Using a Devcontainer
 

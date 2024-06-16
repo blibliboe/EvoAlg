@@ -24,7 +24,8 @@ def DEPGEP(
     population_size: int = 25,
     max_expression_size: int = 32,
     num_constants: int = 5,
-    progress_dependent_crossover=False,
+    progress_dependent_crossover=None,
+    upper_bound=1,
     scaling_factor: float = 0.2,
     p_crossover: float = 0.1,
     initialisation: str = "random",
@@ -76,7 +77,8 @@ def DEPGEP(
         scaling_factor=scaling_factor,
         p_crossover=p_crossover,
         linear_scaling=linear_scaling,
-        progress_dependent_crossover=progress_dependent_crossover
+        progress_dependent_crossover=progress_dependent_crossover,
+        upper_bound=upper_bound
     )
 
     if multi_objective:
@@ -203,7 +205,8 @@ def get_compiled_functions(
     scaling_factor: float,
     p_crossover: float,
     linear_scaling: bool,
-    progress_dependent_crossover: bool
+    progress_dependent_crossover: bool,
+    upper_bound: float
 ):
     """This function aims to avoid repeated jit compilations by caching"""
     evaluate_individual, evaluate_population, to_sympy = get_fitness_and_parser(
@@ -224,7 +227,8 @@ def get_compiled_functions(
         linear_scaling=linear_scaling,
         evaluate_individual=evaluate_individual,
         evaluate_population=evaluate_population,
-        progress_dependent_crossover=progress_dependent_crossover
+        progress_dependent_crossover=progress_dependent_crossover,
+        upper_bound=upper_bound
     )
 
     return (
