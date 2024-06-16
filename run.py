@@ -121,7 +121,7 @@ if __name__ == "__main__":
                 **logging_and_budget
             ),
             dict(
-                name="Minimal (1.2)",
+                name="1.2",
                 operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
@@ -131,7 +131,17 @@ if __name__ == "__main__":
                 **logging_and_budget
             ),
             dict(
-                name="Fair (2)",
+                name="1.5",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=1.5,
+                **logging_and_budget
+            ),
+            dict(
+                name="2",
                 operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
@@ -141,7 +151,17 @@ if __name__ == "__main__":
                 **logging_and_budget
             ),
             dict(
-                name="Maximal (3)",
+                name="2.5",
+                operators=tuple("+,-,*,/,sin".split(",")),
+                max_expression_size=32,
+                num_constants=5,
+                population_size=100,
+                progress_dependent_crossover="Linear",
+                upper_bound=2.5,
+                **logging_and_budget
+            ),
+            dict(
+                name="3",
                 operators=tuple("+,-,*,/,sin".split(",")),
                 max_expression_size=32,
                 num_constants=5,
