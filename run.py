@@ -102,7 +102,7 @@ if __name__ == "__main__":
         problems=[
             # from https://doi.org/10.1145/1389095.1389331
             "2.718 * x0 ** 2 + 3.141636 * x0",
-            # "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
+            "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6",
             "0.3 * x0 * sin(2 * pi * x0)",
             # # from https://archive.ics.uci.edu/datasets
             "Airfoil",
@@ -172,6 +172,6 @@ if __name__ == "__main__":
             ),
         ],
         folds=2,
-        repeats=10,
+        repeats=5,
         # clear_results_path=True
     )

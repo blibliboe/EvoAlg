@@ -50,6 +50,7 @@ def plot_convergence_graphs(
 
         methods = sorted([m for m,*_ in conn.sql("SELECT method FROM results GROUP BY ALL ORDER BY method ASC").fetchall()])
         problems = sorted([p for p,*_ in conn.sql("SELECT problem FROM results GROUP BY ALL ORDER BY problem ASC").fetchall()])
+        problems = [problems[1], problems[4], problems[0], problems[2], problems[3]]
         
         for y_var in y_variables:
             progress = tqdm(desc=f"Plotting {y_var}...", total=len(x_variables) * len(problems) * num_steps)
@@ -60,7 +61,7 @@ def plot_convergence_graphs(
                 ncols=ncols,
                 figsize=(3 * ncols, 3 * nrows),
                 gridspec_kw=dict(
-                    wspace=0.3,
+                    wspace=0.4,
                     hspace=0.3,
                 ),
                 squeeze=False
@@ -102,6 +103,16 @@ def plot_convergence_graphs(
                         ax=ax
                     )
 
+                    if problem == "2.718 * x0 ** 2 + 3.141636 * x0":
+                        problem = "(1)"
+                    if problem == "x0 ** 3 - 0.3 * x0 ** 2 - 0.4 * x0 - 0.6":
+                        problem = "(2)"
+                    if problem == "0.3 * x0 * sin(2 * pi * x0)":
+                        problem = "(3)"
+                    if problem == "Airfoil":
+                        problem = "(4)"
+                    if problem == "Concrete Compressive Strength":
+                        problem = "(5)"
                     ax.set_title(problem if i == 0 else "")
                     ax.set_ylabel(y_var if j == 0 else "")
                     ax.set_xlabel(x_var)
